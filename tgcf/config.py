@@ -25,6 +25,8 @@ class Forward(BaseModel):
     """Blueprint for the forward object."""
 
     # pylint: disable=too-few-public-methods
+    con_name: str = ""
+    use_this: bool = True
     source: Union[int, str] = ""
     dest: List[Union[int, str]] = []
     offset: int = 0
@@ -36,7 +38,7 @@ class LiveSettings(BaseModel):
 
     # pylint: disable=too-few-public-methods
     delete_sync: bool = False
-    delete_on_edit: Optional[str] = ""
+    delete_on_edit: Optional[str] = ".deleteMe"
 
 
 class PastSettings(BaseModel):

@@ -33,16 +33,8 @@ if check_password(st):
         for i in range(num):
             with tabs[i]:
                 con = i + 1
+
                 placeholder = st.empty()
-                if st.checkbox(f"Show advanced options to delete connection {con}"):
-                    st.warning(
-                        f"Clicking the 'Remove' button will **delete** connection {con}. This action cannot be reversed once done.",
-                        icon="⚠️",
-                    )
-                    if st.button(f"Remove connection {con}"):
-                        del CONFIG.forwards[i]
-                        write_config(CONFIG)
-                        st.experimental_rerun()
 
                 st.write("---")
                 st.write(f"Configure connection {con}")
@@ -59,9 +51,23 @@ if check_password(st):
                 )
                 st.write("Write destinations one item per line")
 
-                if st.checkbox(
-                    f"Advanced options for connection: {con} [tgcf in Past mode]"
-                ):
+                if st.checkbox(f"Advanced options to modify connection: {con}"):
+                    CONFIG.forwards[i].con_name = st.text_input(
+                        "Name of this connection", value=CONFIG.forwards[i].con_name
+                    )
+                    if CONFIG.forwards[i].con_name:
+                        placeholder.write(CONFIG.forwards[i].con_name)
+
+                    st.info(
+                        "You can untick the below checkbox to suspend this connection."
+                    )
+                    CONFIG.forwards[i].use_this = st.checkbox(
+                        "Use this connection", value=CONFIG.forwards[i].use_this
+                    )
+                    if not CONFIG.forwards[i].use_this:
+                        placeholder.warning("This connection is suspended.")
+
+                    st.write("Past Mode Settings")
                     CONFIG.forwards[i].offset = int(
                         st.text_input(
                             f"Offset for connection:{con}",
@@ -74,6 +80,16 @@ if check_password(st):
                             value=str(CONFIG.forwards[i].end),
                         )
                     )
+
+                    st.warning(
+                        f"Clicking the 'Remove' button will **delete** connection {con}. This action cannot be reversed once done.",
+                        icon="⚠️",
+                    )
+
+                    if st.button(f"Remove connection {con}"):
+                        del CONFIG.forwards[i]
+                        write_config(CONFIG)
+                        st.experimental_rerun()
 
                 st.write("---")
 
